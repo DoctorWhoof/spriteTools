@@ -30,10 +30,10 @@ Class MyWindow Extends Window
 		App.RequestRender()
 		canvas.Font = smallFont
 		
-		canvas.DrawText( "Source image",Width*.1, Height*.05 )
+		canvas.DrawText( "Source image, " + srcImage.Width + "x" + srcImage.Height,Width*.1, Height*.05 )
 		canvas.DrawImage( srcImage, Width*.1, Height*.07, 0, 2, 2 )
 		
-		canvas.DrawText( "Atlas with tile gaps filled",Width*.1, Height*.35 )
+		canvas.DrawText( "Atlas with tile gaps filled, " + atlas.Image.Width + "x" + atlas.Image.Height, Width*.1, Height*.35 )
 		canvas.DrawImage( atlas.Image, Width*.1, Height*.37, 0, 2, 2 )
 		
 		canvas.DrawText( "Resulting tiles with indices",Width*.1, Height*.68 )
