@@ -1,0 +1,17 @@
+test__1spritetools.o: \
+  /Users/leo/GoogleDrive/Code/Monkey2/spriteTools/examples/test.buildv1.1.08/macos_debug/src/test__1spritetools.cpp \
+  /Users/leo/GoogleDrive/Code/Monkey2/spriteTools/examples/test.buildv1.1.08/macos_debug/include/test__1spritetools.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbmonkey.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbstd.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbtypes.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbassert.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbmemory.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbstring.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbdebug.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbgc.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbfunction.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbarray.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbobject.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbvariant.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbtypeinfo.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbdeclinfo.h

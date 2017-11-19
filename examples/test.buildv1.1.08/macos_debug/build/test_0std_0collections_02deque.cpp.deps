@@ -1,0 +1,28 @@
+test_std_collections_2deque.o: \
+  /Users/leo/GoogleDrive/Code/Monkey2/spriteTools/examples/test.buildv1.1.08/macos_debug/src/test_std_collections_2deque.cpp \
+  /Users/leo/GoogleDrive/Code/Monkey2/spriteTools/examples/test.buildv1.1.08/macos_debug/include/test_std_collections_2deque.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbmonkey.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbstd.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbtypes.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbassert.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbmemory.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbstring.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbdebug.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbgc.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbfunction.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbarray.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbobject.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbvariant.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbtypeinfo.h \
+  /Applications/Blitz/Monkey2/modules/monkey/native/bbdeclinfo.h \
+  /Applications/Blitz/Monkey2/modules/std/std.buildv1.1.08/macos_debug/include/std_collections_2deque.h \
+  /Applications/Blitz/Monkey2/modules/std/std.buildv1.1.08/macos_debug/include/std_collections_2container.h \
+  /Applications/Blitz/Monkey2/modules/monkey/monkey.buildv1.1.08/macos_debug/include/monkey_types.h \
+  /Users/leo/GoogleDrive/Code/Monkey2/spriteTools/examples/test.buildv1.1.08/macos_debug/include/test_std_collections_2container.h \
+  /Users/leo/GoogleDrive/Code/Monkey2/spriteTools/examples/test.buildv1.1.08/macos_debug/include/test_std_geom_2rect.h \
+  /Applications/Blitz/Monkey2/modules/std/std.buildv1.1.08/macos_debug/include/std_geom_2rect.h \
+  /Applications/Blitz/Monkey2/modules/std/std.buildv1.1.08/macos_debug/include/std_geom_2vec2.h \
+  /Applications/Blitz/Monkey2/modules/mojo/mojo.buildv1.1.08/macos_debug/include/mojo_graphics_2image.h \
+  /Applications/Blitz/Monkey2/modules/std/std.buildv1.1.08/macos_debug/include/std_resource_2resource.h \
+  /Applications/Blitz/Monkey2/modules/std/resource/native/bbresource.h \
+  /Applications/Blitz/Monkey2/modules/monkey/monkey.buildv1.1.08/macos_debug/include/monkey_debug.h
