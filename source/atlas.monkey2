@@ -142,13 +142,12 @@ Class Atlas
 			Local xPix:Double = ( col * pCellWidth ) + 1
 			Local yPix:Double = ( ( i / _columns ) * pCellHeight ) + 1
 			'Fills the gaps between cells with redundant pixels
-			Local window := srcPix.Window( x, y, _cellWidth, _cellHeight )
-			pix.Paste( window, xPix-1, yPix )
-			pix.Paste( window, xPix+1, yPix )
-			pix.Paste( window, xPix, yPix-1 )
-			pix.Paste( window, xPix, yPix+1 )
+			pix.Paste( srcPix.Window( x, y, 1, _cellHeight ), xPix-1, yPix )
+			pix.Paste( srcPix.Window( x + _cellWidth-1, y, 1, _cellHeight ), xPix+_cellWidth, yPix )
+			pix.Paste( srcPix.Window( x, y, _cellWidth, 1 ), xPix, yPix-1 )
+			pix.Paste( srcPix.Window( x, y + _cellHeight-1, _cellWidth, 1 ), xPix, yPix+_cellHeight )
 			'Draws the cell
-			pix.Paste( window, xPix, yPix )
+			pix.Paste( srcPix.Window( x, y, _cellWidth, _cellHeight ), xPix, yPix )
 			'Populates UV coordinates
 			_coordinates.Push( New Rectf( xPix/pWidth, yPix/pHeight, (xPix+_cellWidth)/pWidth, (yPix+_cellHeight)/pHeight ) )
 		Next
