@@ -1,6 +1,8 @@
 #Import "../spritetools"
 #Import "images/"
 
+Using spritetools..
+
 Const smallFont:Font = Font.Load( "font::DejaVuSans.ttf", 12 )
 
 Function Main()
