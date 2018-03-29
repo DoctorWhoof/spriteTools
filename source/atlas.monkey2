@@ -107,26 +107,28 @@ Class Atlas
 	@param flags mojo texture flags. Use TextureFlags.None for "retro", pixelated look.
 	#end
 	Method New( path:String, cellWidth:Int, cellHeight:Int, padding:Int = 0, border:Int = 0, flags:TextureFlags = TextureFlags.FilterMipmap )
+		
+		'Temp pixmap holding the original pixels for manipulation
 		Local srcPix := Pixmap.Load( path )
 		Assert( srcPix, "~n~nAtlas: Failed to load " + path + "~n~n" )
 		
 		'Source spritesheet values
 		_cellWidth = cellWidth
 		_cellHeight = cellHeight
-		Local _padding := padding
-		Local _border := border
-		Local _paddedWidth := _cellWidth + ( _padding * 2 )
-		Local _paddedHeight := _cellHeight + ( _padding * 2 )
-		_rows = ( srcPix.Height - border - _border ) / _paddedHeight
-		_columns = ( srcPix.Width - border - _border ) / _paddedWidth
+		Local _paddedWidth := _cellWidth + ( padding * 2 )
+		Local _paddedHeight := _cellHeight + ( padding * 2 )
+		_rows = ( srcPix.Height - border - border ) / _paddedHeight
+		_columns = ( srcPix.Width - border - border ) / _paddedWidth
 		
 		'Destination Pixmap's values. The padding is always 1 here, so there's 2 extra pixels on each axis.
 		Local pCellWidth := _cellWidth + 2
 		Local pCellHeight := _cellHeight + 2
 		Local pWidth :=  NearestPow( ( pCellWidth * _columns ) )
 		Local pHeight := NearestPow( ( pCellHeight * _rows ) )
+		
+		'Temp destination pixmap
 		Local pix := New Pixmap( pWidth, pHeight)
-		Print pWidth + "," + pHeight
+		Print "Atlas Pixmap: " + pWidth + "," + pHeight
 		
 		'Calculates the values for each cell
 		Local numFrames := _rows * _columns
@@ -136,8 +138,8 @@ Class Atlas
 		For Local i:= 0 Until numFrames
 			Local col := i Mod _columns
 			'Source coordinates
-			Local x:Double = ( col * _paddedWidth ) + _padding + _border
-			Local y:Double = ( ( i / _columns ) * _paddedHeight ) + _padding + _border
+			Local x:Double = ( col * _paddedWidth ) + padding + border
+			Local y:Double = ( ( i / _columns ) * _paddedHeight ) + padding + border
 			'Destination coordinates
 			Local xPix:Double = ( col * pCellWidth ) + 1
 			Local yPix:Double = ( ( i / _columns ) * pCellHeight ) + 1
@@ -151,6 +153,9 @@ Class Atlas
 			'Populates UV coordinates
 			_coordinates.Push( New Rectf( xPix/pWidth, yPix/pHeight, (xPix+_cellWidth)/pWidth, (yPix+_cellHeight)/pHeight ) )
 		Next
+		
+'		pix = pix.Convert( PixelFormat.RGB8 )	'Testing only
+		pix.PremultiplyAlpha()
 		
 		_image = New Image( pWidth, pHeight, PixelFormat.RGBA8, flags )
 		_texture = _image.Texture
