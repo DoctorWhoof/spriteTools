@@ -57,10 +57,10 @@ Class Atlas
 	End
 	
 	#rem monkeydoc
-	Returns an array containig all UV coordinates for each cell. Read Only.
+	Returns an array containing all UV coordinates for each cell. Read Only.
 	#end
 	Property Coords:Rect<Double>[]()
-		Return _coordinates.ToArray()	
+		Return _coordinates.ToArray()
 	End
 	
 	#rem monkeydoc
@@ -144,12 +144,17 @@ Class Atlas
 			Local xPix:Double = ( col * pCellWidth ) + 1
 			Local yPix:Double = ( ( i / _columns ) * pCellHeight ) + 1
 			'Fills the gaps between cells with redundant pixels
-			pix.Paste( srcPix.Window( x, y, 1, _cellHeight ), xPix-1, yPix )
-			pix.Paste( srcPix.Window( x + _cellWidth-1, y, 1, _cellHeight ), xPix+_cellWidth, yPix )
-			pix.Paste( srcPix.Window( x, y, _cellWidth, 1 ), xPix, yPix-1 )
-			pix.Paste( srcPix.Window( x, y + _cellHeight-1, _cellWidth, 1 ), xPix, yPix+_cellHeight )
+			pix.Paste( srcPix.Window( x, y, 1, _cellHeight ), xPix+_cellWidth, yPix )
+			pix.Paste( srcPix.Window( x + _cellWidth-1, y, 1, _cellHeight ),xPix-1, yPix )
+			pix.Paste( srcPix.Window( x, y, _cellWidth, 1 ), xPix, yPix+_cellHeight )
+			pix.Paste( srcPix.Window( x, y + _cellHeight-1, _cellWidth, 1 ), xPix, yPix-1 )
 			'Draws the cell
 			pix.Paste( srcPix.Window( x, y, _cellWidth, _cellHeight ), xPix, yPix )
+			'Fill the gap "corners"
+			pix.SetPixel( xPix-1, yPix-1, pix.GetPixel( xPix+_cellWidth-1, yPix+cellHeight-1 ) )
+			pix.SetPixel( xPix+_cellWidth, yPix-1, pix.GetPixel( xPix, yPix+cellHeight-1 ) )
+			pix.SetPixel( xPix+_cellWidth, yPix+_cellHeight, pix.GetPixel( xPix, yPix ) )
+			pix.SetPixel( xPix-1, yPix+_cellHeight, pix.GetPixel( xPix+_cellWidth-1, yPix ) )
 			'Populates UV coordinates
 			_coordinates.Push( New Rectf( xPix/pWidth, yPix/pHeight, (xPix+_cellWidth)/pWidth, (yPix+_cellHeight)/pHeight ) )
 		Next
