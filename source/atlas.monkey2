@@ -106,7 +106,7 @@ Class Atlas
 	@param border The number of pixels around the entire .png texture, in addition to the padding. Usually 0.
 	@param flags mojo texture flags. Use TextureFlags.None for "retro", pixelated look.
 	#end
-	Method New( path:String, cellWidth:Int, cellHeight:Int, padding:Int = 0, border:Int = 0, flags:TextureFlags = TextureFlags.FilterMipmap )
+		Method New( path:String, cellWidth:Int, cellHeight:Int, padding:Int = 0, border:Int = 0, flags:TextureFlags = TextureFlags.FilterMipmap, wrapTiles:Bool = True )
 		
 		'Temp pixmap holding the original pixels for manipulation
 		Local srcPix := Pixmap.Load( path )
@@ -144,22 +144,37 @@ Class Atlas
 			Local xPix:Double = ( col * pCellWidth ) + 1
 			Local yPix:Double = ( ( i / _columns ) * pCellHeight ) + 1
 			'Fills the gaps between cells with redundant pixels
-			pix.Paste( srcPix.Window( x, y, 1, _cellHeight ), xPix+_cellWidth, yPix )
-			pix.Paste( srcPix.Window( x + _cellWidth-1, y, 1, _cellHeight ),xPix-1, yPix )
-			pix.Paste( srcPix.Window( x, y, _cellWidth, 1 ), xPix, yPix+_cellHeight )
-			pix.Paste( srcPix.Window( x, y + _cellHeight-1, _cellWidth, 1 ), xPix, yPix-1 )
-			'Draws the cell
+			If wrapTiles
+				'Edge pixels are expanded to filter with other edge. Best for repeating patterns.
+				pix.Paste( srcPix.Window( x, y, 1, _cellHeight ), xPix+_cellWidth, yPix )
+				pix.Paste( srcPix.Window( x + _cellWidth-1, y, 1, _cellHeight ),xPix-1, yPix )
+				pix.Paste( srcPix.Window( x, y, _cellWidth, 1 ), xPix, yPix+_cellHeight )
+				pix.Paste( srcPix.Window( x, y + _cellHeight-1, _cellWidth, 1 ), xPix, yPix-1 )
+			Else
+				'Edge pixels expand to their own colors. Best for tiles with transparency and sprites.
+				pix.Paste( srcPix.Window( x, y, 1, _cellHeight ), xPix-1, yPix )
+				pix.Paste( srcPix.Window( x + _cellWidth-1, y, 1, _cellHeight ), xPix+_cellWidth, yPix )
+				pix.Paste( srcPix.Window( x, y, _cellWidth, 1 ), xPix, yPix-1 )
+				pix.Paste( srcPix.Window( x, y + _cellHeight-1, _cellWidth, 1 ), xPix, yPix+_cellHeight )
+			End
+			'Draw the cell
 			pix.Paste( srcPix.Window( x, y, _cellWidth, _cellHeight ), xPix, yPix )
 			'Fill the gap "corners"
-			pix.SetPixel( xPix-1, yPix-1, pix.GetPixel( xPix+_cellWidth-1, yPix+cellHeight-1 ) )
-			pix.SetPixel( xPix+_cellWidth, yPix-1, pix.GetPixel( xPix, yPix+cellHeight-1 ) )
-			pix.SetPixel( xPix+_cellWidth, yPix+_cellHeight, pix.GetPixel( xPix, yPix ) )
-			pix.SetPixel( xPix-1, yPix+_cellHeight, pix.GetPixel( xPix+_cellWidth-1, yPix ) )
+			If wrapTiles
+				pix.SetPixel( xPix-1, yPix-1, pix.GetPixel( xPix+_cellWidth-1, yPix+cellHeight-1 ) )
+				pix.SetPixel( xPix+_cellWidth, yPix-1, pix.GetPixel( xPix, yPix+cellHeight-1 ) )
+				pix.SetPixel( xPix+_cellWidth, yPix+_cellHeight, pix.GetPixel( xPix, yPix ) )
+				pix.SetPixel( xPix-1, yPix+_cellHeight, pix.GetPixel( xPix+_cellWidth-1, yPix ) )
+			Else
+				pix.SetPixel( xPix-1, yPix-1, pix.GetPixel( xPix, yPix ) )
+				pix.SetPixel( xPix+_cellWidth, yPix-1, pix.GetPixel( xPix+_cellWidth-1, yPix ) )
+				pix.SetPixel( xPix+_cellWidth, yPix+_cellHeight, pix.GetPixel( xPix+_cellWidth-1, yPix+_cellHeight-1 ) )
+				pix.SetPixel( xPix-1, yPix+_cellHeight, pix.GetPixel( xPix, yPix+_cellHeight-1 ) )
+			End
 			'Populates UV coordinates
 			_coordinates.Push( New Rectf( xPix/pWidth, yPix/pHeight, (xPix+_cellWidth)/pWidth, (yPix+_cellHeight)/pHeight ) )
 		Next
 		
-'		pix = pix.Convert( PixelFormat.RGB8 )	'Testing only
 		pix.PremultiplyAlpha()
 		
 		_image = New Image( pWidth, pHeight, PixelFormat.RGBA8, flags )

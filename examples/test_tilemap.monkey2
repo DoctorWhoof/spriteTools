@@ -22,10 +22,12 @@ Class MyWindow Extends Window
 	Field scl := 2
 
 	Method New()
-		Super.New( "Sprite Test",400,600, WindowFlags.Resizable )
+		Super.New( "Sprite Test",1024,768, WindowFlags.Resizable )
 		
-		srcImage = Image.Load( "asset::pixelPattern.png", Null, TextureFlags.None )
-		atlas = New Atlas( "asset::pixelPattern.png", 16, 16, 0, 0, TextureFlags.None, False )
+		srcImage = Image.Load( "asset::crystalcave.png", Null, TextureFlags.None )
+		atlas = New Atlas( "asset::crystalcave.png", 32, 32, 0, 0, TextureFlags.None, False )
+		
+		ClearColor = Color.DarkGrey
 	End
 
 	Method OnRender( canvas:Canvas ) Override
@@ -35,16 +37,16 @@ Class MyWindow Extends Window
 		canvas.DrawText( "Source image, " + srcImage.Width + "x" + srcImage.Height,Width*.1, Height*.05 )
 		canvas.DrawImage( srcImage, Width*.1, Height*.07, 0, 2, 2 )
 		
-		canvas.DrawText( "Atlas with tile gaps filled, " + atlas.Image.Width + "x" + atlas.Image.Height, Width*.1, Height*.35 )
-		canvas.DrawImage( atlas.Image, Width*.1, Height*.37, 0, 2, 2 )
+		canvas.DrawText( "Atlas with tile gaps filled, " + atlas.Image.Width + "x" + atlas.Image.Height, Width*.1, Height*.55 )
+		canvas.DrawImage( atlas.Image, Width*.1, Height*.57, 0, 2, 2 )
 		
-		canvas.DrawText( "Resulting tiles with indices",Width*.1, Height*.68 )
+		canvas.DrawText( "Resulting tiles with indices",Width*.5, Height*.05 )
 		For Local x := 0 Until atlas.Columns
 			For Local y := 0 Until atlas.Rows
 				Local n := x + ( atlas.Columns * y )
 				Local pos := New Vec2i( (atlas.CellWidth * x * scl)+(x*scl), (atlas.CellHeight * y * scl)+(y*scl) )
-				canvas.DrawImage( atlas.Cells[ n ], pos.X + Width*.1, pos.Y + Height*.7, 0, scl, scl )
-				canvas.DrawText( n, pos.X + Width*.1, pos.Y + Height*.7 )
+				canvas.DrawImage( atlas.Cells[ n ], pos.X + Width*.5, pos.Y + Height*.07, 0, scl, scl )
+				canvas.DrawText( n, pos.X + Width*.5, pos.Y + Height*.07 )
 			Next
 		Next
 	End
