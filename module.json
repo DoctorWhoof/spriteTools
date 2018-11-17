@@ -1,7 +1,0 @@
-{
-	"module":"spritetools",
-	"about":"Useful spritesheet classes",
-	"author":"Leo Santos",
-	"version":"1.0.0",
-	"depends":["std","mojo","mojo3d"]
-}

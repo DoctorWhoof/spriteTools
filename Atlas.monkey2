@@ -1,4 +1,8 @@
-Namespace spritetools
+Namespace mojo.graphics
+
+#Import "<mojo>"
+Using mojo..
+Using std..
 
 #rem monkeydoc The Atlas class.
 An Atlas contains a single texture shared by all individual "Cells" (frames, in the case of an animated sprite, or tiles, if used as a tileset).
@@ -11,7 +15,7 @@ Class Atlas
 	Field _image:Image								'Image that simply holds the main texture
 	
 	Field _cells:Image[]							'Array with all cells as individual images
-	Field _coordinates:= New Stack<Rect<Double>>	'A stack containing the UV coordinates for each cell
+	Field _coordinates:= New Stack<Rect<Float>>		'A stack containing the UV coordinates for each cell
 	
 	Field _rows:Int									'Number of rows in the original image file
 	Field _columns:Int								'Number of collumns in the original image file
@@ -59,7 +63,7 @@ Class Atlas
 	#rem monkeydoc
 	Returns an array containing all UV coordinates for each cell. Read Only.
 	#end
-	Property Coords:Rect<Double>[]()
+	Property Coords:Rect<Float>[]()
 		Return _coordinates.ToArray()
 	End
 	
@@ -106,7 +110,7 @@ Class Atlas
 	@param border The number of pixels around the entire .png texture, in addition to the padding. Usually 0.
 	@param flags mojo texture flags. Use TextureFlags.None for "retro", pixelated look.
 	#end
-		Method New( path:String, cellWidth:Int, cellHeight:Int, padding:Int = 0, border:Int = 0, flags:TextureFlags = TextureFlags.FilterMipmap, wrapTiles:Bool = True )
+	Method New( path:String, cellWidth:Int, cellHeight:Int, padding:Int = 0, border:Int = 0, flags:TextureFlags = TextureFlags.FilterMipmap, wrapTiles:Bool = True )
 		
 		'Temp pixmap holding the original pixels for manipulation
 		Local srcPix := Pixmap.Load( path )
@@ -128,6 +132,7 @@ Class Atlas
 		
 		'Temp destination pixmap
 		Local pix := New Pixmap( pWidth, pHeight)
+		pix.Clear( New Color(0,0,0,0) )
 		Print "Atlas Pixmap: " + pWidth + "," + pHeight
 		
 		'Calculates the values for each cell
@@ -187,12 +192,11 @@ Class Atlas
 
 End
 
-#rem monkeydoc
-Returns the nearest "power of two" number (64, 128, 256, 512, 1024, etc).
-#end
+
 Function NearestPow:Int( number:Int )
 	Return Pow( 2, Ceil( Log( number )/Log( 2 ) ) )
 End
+
 
 
 

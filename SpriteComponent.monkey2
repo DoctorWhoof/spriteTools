@@ -1,19 +1,27 @@
-Namespace spritetools
+Namespace mojo3d
 
 #Import "<mojo3d>"
 Using mojo3d..
 
-Class AnimSprite Extends Sprite
+Class SpriteComponent Extends Behaviour
 
 	'Event functions
 	Field onLastFrame :Void()
 	Field onFirstFrame :Void()
 	
+	Field path:String
+	Field cellWidth:Int
+	Field cellHeight:Int
+	Field padding:Int
+	Field border:Int
+	Field flags:TextureFlags
+
 	Protected
+	Field _sprite:Sprite
 	
 	'Atlas values
-	Field _frame:Int = 0									'The frame currently displayed
-	Field _coordinates:= New Stack<Rect<Double>>			'A stack containing the UV coordinates for each cell
+	Field _frame:Int = -1									'The frame currently displayed
+	Field _atlas:Atlas
 
 	'Animation clip management
 	Field _timeScale := 1.0									'Adjusts playback speed. Can be used to create slow motion effects without changing the framerate.
@@ -31,18 +39,18 @@ Class AnimSprite Extends Sprite
 	Public
 	
 	'Current frame
-	Property Frame:Int()		
+	Property Frame:Int()
 		Return _frame
 	Setter( number:Int )
 		If number <> _frame
-			_frame = Clamp( number, 0, _coordinates.Length-1 )
-			TextureRect = _coordinates[ _frame ]
+			_frame = Clamp( number, 0, _atlas.Coords.Length-1 )
+			_sprite.TextureRect = _atlas.Coords[ _frame ]
 			If _frame >= LastFrame
 				If Not _hasReachedEnd
 					onLastFrame()
 					_hasReachedEnd = True
 					_hasReachedStart = False
-				End		
+				End
 			End
 			If _firstFrame
 				onFirstFrame()
@@ -53,15 +61,15 @@ Class AnimSprite Extends Sprite
 						onFirstFrame()
 						_hasReachedStart = True
 						_hasReachedEnd = False
-					End		
-				End		
+					End
+				End
 			End
 		End
 	End
 	
 	
 	'current AnimationClip
-	Property Animation:String()		
+	Property Animation:String()
 		Return _anim.name
 	Setter( name:String )
 		If _animations[ name ]
@@ -108,8 +116,18 @@ Class AnimSprite Extends Sprite
 		If _anim
 			Return _period * _anim.frames.Length
 		Else
-			Return _period * _coordinates.Length
+			Return _period * _atlas.Coords.Length
 		End
+	End
+	
+	
+	'Dimensions per frame
+	Property CellWidth:Int()
+		Return cellWidth
+	End
+	
+	Property CellHeight:Int()
+		Return cellHeight
 	End
 
 	
@@ -119,7 +137,7 @@ Class AnimSprite Extends Sprite
 			Return _anim.frames[ 0 ]
 		Else
 			Return 0
-		End	
+		End
 	End
 	
 	
@@ -128,39 +146,45 @@ Class AnimSprite Extends Sprite
 		If _anim
 			Return _anim.frames[ _anim.frames.Length-1 ]
 		Else
-			Return _coordinates.Length - 1
-		End	
+			Return _atlas.Coords.Length - 1
+		End
 	End
 	
 	
 	'******************************* Public Methods *******************************
 	
+	Method New( entity:Entity ) Override
+		Super.New( entity )
+		_sprite = Cast<Sprite>( Entity )
+		Assert( _sprite, "SpriteAnimation: Error, entity needs to be a Sprite")
+	End
 	
-	Method New( path:String, cellWidth:Int, cellHeight:Int, padding:Int = 0, border:Int = 0, flags:TextureFlags = TextureFlags.FilterMipmap )
-		'Creates new Sprite with material
-		Super.New( SpriteMaterial.Load( path, flags ) )
-		Local texture := Cast<SpriteMaterial>( Material ).ColorTexture
-		Local _paddedWidth:Double = cellWidth + ( padding * 2 )
-		Local _paddedHeight:Double = cellHeight + ( padding * 2 )
-		Local _rows:Int = ( texture.Height - border - border ) / _paddedHeight
-		Local _columns:Int = ( texture.Width - border - border ) / _paddedWidth
-		'Generates UV coordinates for each frame
-		Local numFrames := _rows * _columns
-		Local w:Double = texture.Width
-		Local h:Double = texture.Height
-		For Local i:= 0 Until numFrames
-			Local col := i Mod _columns
-			Local x:Double = ( col * _paddedWidth ) + padding + border
-			Local y:Double = ( ( i / _columns ) * _paddedHeight ) + padding + border
-			_coordinates.Push( New Rectf( x/w, y/h, (x+cellWidth)/w, (y+cellHeight)/h ) )
-		Next
-		'Defaults to frame 0
+	
+	Method Load( path:String, cellWidth:Int, cellHeight:Int, padding:Int = 0, border:Int = 0, flags:TextureFlags = TextureFlags.FilterMipmap )
+		
+		_atlas = New Atlas( path, cellWidth, cellHeight, padding, border, flags, False )
+		
+		Local _mat := New SpriteMaterial
+		_mat.ColorTexture = _atlas.Texture
+		_sprite.Material = _mat
+		_sprite.Visible = True
+		
+		Self.path = path
+		Self.cellWidth = cellWidth
+		Self.cellHeight = cellHeight
+		Self.padding = padding
+		Self.border = border
+		Self.flags = flags
+		
 		Frame = 0
 	End
 	
 	
-	'Update time is in seconds (Double), not milliseconds
-	Method Update( time:Double )
+	'Called every frame.
+	Method OnUpdate( elapsed:Float ) Override
+		
+		Local time := Clock.Now()
+		
 		Local frameLength:Double = ( 1.0 / FrameRate ) / _timeScale
 		time += ( _offset * frameLength )
 		
@@ -168,10 +192,11 @@ Class AnimSprite Extends Sprite
 			If _anim.loop
 				Frame = _anim.frames[ Int( ( time Mod Duration ) / frameLength ) ]
 			Else
-				Frame = _anim.frames[ Int( time / frameLength ) ]
+				Local f := Clamp<Int>( time / frameLength, 0, _anim.frames.Length-1 )
+				Frame = _anim.frames[f]
 			End
 		Else
-			Frame = Int( ( time Mod Duration ) /frameLength ) 
+			Frame = Int( ( time Mod Duration ) /frameLength )
 		End
 	End
 	
@@ -184,6 +209,8 @@ Class AnimSprite Extends Sprite
 		animClip.frames = _frames
 		animClip.framerate = framerate
 		_animations.Add( _name, animClip )
+		
+		Print "Animation " + _name + ", loop=" + _loop + " ,rate=" + _framerate + ", frames=" + ArrayToString( _frames )
 	End
 
 
@@ -230,3 +257,4 @@ Class AnimationClip						'AnimationClips contain a sequence of frames to be play
 	End
 	
 End
+

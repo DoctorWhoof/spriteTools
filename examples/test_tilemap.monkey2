@@ -1,7 +1,5 @@
-#Import "../spritetools"
+#Import "../Atlas"
 #Import "images/"
-
-Using spritetools..
 
 Const smallFont:Font = Font.Load( "font::DejaVuSans.ttf", 12 )
 
@@ -22,7 +20,7 @@ Class MyWindow Extends Window
 	Field scl := 2
 
 	Method New()
-		Super.New( "Sprite Test",1024,768, WindowFlags.Resizable )
+		Super.New( "Sprite Test", 1024, 768, WindowFlags.HighDPI | WindowFlags.Resizable )
 		
 		srcImage = Image.Load( "asset::crystalcave.png", Null, TextureFlags.None )
 		atlas = New Atlas( "asset::crystalcave.png", 32, 32, 0, 0, TextureFlags.None, False )
