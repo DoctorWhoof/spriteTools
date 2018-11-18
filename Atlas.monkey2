@@ -1,4 +1,4 @@
-Namespace mojo.graphics
+Namespace spriteTools
 
 #Import "<mojo>"
 Using mojo..
@@ -192,6 +192,7 @@ Class Atlas
 
 End
 
+Private
 
 Function NearestPow:Int( number:Int )
 	Return Pow( 2, Ceil( Log( number )/Log( 2 ) ) )

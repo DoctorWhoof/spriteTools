@@ -1,4 +1,4 @@
-Namespace mojo3d
+Namespace spriteTools
 
 #Import "<mojo3d>"
 Using mojo3d..
